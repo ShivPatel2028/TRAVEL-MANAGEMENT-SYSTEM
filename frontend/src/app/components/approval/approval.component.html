@@ -1,0 +1,76 @@
+<div class="approval-container">
+  <h2>Pending Travel Requests</h2>
+
+  <mat-card class="requests-card">
+    <mat-card-content>
+      <div *ngIf="loading" class="loading">Loading...</div>
+      <table mat-table [dataSource]="pendingRequests" class="requests-table">
+        <ng-container matColumnDef="userName">
+          <th mat-header-cell *matHeaderCellDef>Employee Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.userName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="department">
+          <th mat-header-cell *matHeaderCellDef>Department</th>
+          <td mat-cell *matCellDef="let element">{{ element.department }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fromLocation">
+          <th mat-header-cell *matHeaderCellDef>From</th>
+          <td mat-cell *matCellDef="let element">{{ element.fromLocation }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="toLocation">
+          <th mat-header-cell *matHeaderCellDef>To</th>
+          <td mat-cell *matCellDef="let element">{{ element.toLocation }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="travelDate">
+          <th mat-header-cell *matHeaderCellDef>Travel Date</th>
+          <td mat-cell *matCellDef="let element">{{ element.travelDate | date:'short' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="requestedBudget">
+          <th mat-header-cell *matHeaderCellDef>Requested Budget</th>
+          <td mat-cell *matCellDef="let element">{{ element.requestedBudget | currency:'INR' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actualExpense">
+          <th mat-header-cell *matHeaderCellDef>Total Expenses</th>
+          <td mat-cell *matCellDef="let element">{{ element.actualExpense | currency:'INR' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngIf="element.status === 'Pending'">
+              <button mat-button color="primary" (click)="approveRequest(element.id)">Approve</button>
+              <button mat-button color="warn" (click)="rejectRequest(element.id)">Reject</button>
+            </ng-container>
+            <ng-container *ngIf="element.status === 'BillSubmitted'">
+              <div *ngIf="element.bills && element.bills.length > 0" class="bill-links mb-2">
+                <a *ngFor="let bill of element.bills; let i = index" mat-button color="accent" [href]="'http://localhost:5000' + bill.filePath" target="_blank">
+                  View Bill {{i + 1}}
+                </a>
+              </div>
+              <button mat-button color="primary" (click)="validateBill(element.id, true)">Verify & Pay</button>
+              <button mat-button color="warn" (click)="validateBill(element.id, false)">Reject Bill</button>
+            </ng-container>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <div *ngIf="pendingRequests.length === 0 && !loading" class="no-data">
+        No pending requests
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

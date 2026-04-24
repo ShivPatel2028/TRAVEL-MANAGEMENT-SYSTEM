@@ -1,0 +1,102 @@
+<div class="dashboard-container">
+  <div class="navbar">
+    <h1>Travel Management System</h1>
+    <div class="nav-right">
+      <span class="user-info">Welcome, {{ currentUser.name }} ({{ currentUser.role }})</span>
+      <button mat-button color="warn" (click)="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="header">
+      <h2>Dashboard</h2>
+      <button mat-raised-button color="primary" (click)="createTravelRequest()" 
+        *ngIf="currentUser.role === 'Employee'">
+        Create Travel Request
+      </button>
+    </div>
+
+    <mat-card class="requests-card">
+      <mat-card-header>
+        <mat-card-title>Travel Requests</mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div *ngIf="loading" class="loading">Loading...</div>
+        <table mat-table [dataSource]="travelRequests" class="requests-table">
+          <ng-container matColumnDef="userName">
+            <th mat-header-cell *matHeaderCellDef>Employee</th>
+            <td mat-cell *matCellDef="let element">{{ element.userName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="department">
+            <th mat-header-cell *matHeaderCellDef>Department</th>
+            <td mat-cell *matCellDef="let element">{{ element.department }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="fromLocation">
+            <th mat-header-cell *matHeaderCellDef>From</th>
+            <td mat-cell *matCellDef="let element">{{ element.fromLocation }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="toLocation">
+            <th mat-header-cell *matHeaderCellDef>To</th>
+            <td mat-cell *matCellDef="let element">{{ element.toLocation }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="travelDate">
+            <th mat-header-cell *matHeaderCellDef>Travel Date</th>
+            <td mat-cell *matCellDef="let element">{{ element.travelDate | date:'short' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="requestedBudget">
+            <th mat-header-cell *matHeaderCellDef>Requested Budget</th>
+            <td mat-cell *matCellDef="let element">{{ element.requestedBudget | currency:'INR' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="actualExpense">
+            <th mat-header-cell *matHeaderCellDef>Total Expenses</th>
+            <td mat-cell *matCellDef="let element">{{ element.actualExpense | currency:'INR' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let element">
+              <span [ngClass]="'status-' + element.status.toLowerCase()">{{ element.status }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-button color="primary" (click)="approveRequest(element.id)"
+                *ngIf="(currentUser.role === 'Admin' || currentUser.role === 'Manager') && element.status === 'Pending'">
+                Approve
+              </button>
+              <button mat-button color="warn" (click)="rejectRequest(element.id)"
+                *ngIf="(currentUser.role === 'Admin' || currentUser.role === 'Manager') && element.status === 'Pending'">
+                Reject
+              </button>
+              <button mat-button color="accent" (click)="submitBill(element.id)"
+                *ngIf="currentUser.role === 'Employee' && element.status === 'Approved'">
+                Submit Bill
+              </button>
+              <div *ngIf="element.bills && element.bills.length > 0" class="bill-links">
+                <a *ngFor="let bill of element.bills; let i = index" mat-button color="primary" [href]="apiUrl + bill.filePath" target="_blank">
+                  Bill {{i + 1}}
+                </a>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <div *ngIf="travelRequests.length === 0 && !loading" class="no-data">
+          No travel requests found
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

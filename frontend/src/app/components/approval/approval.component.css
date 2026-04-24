@@ -1,0 +1,28 @@
+.approval-container {
+  padding: 30px;
+}
+
+.approval-container h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.requests-card {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.requests-table {
+  width: 100%;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
