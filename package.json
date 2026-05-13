@@ -1,0 +1,13 @@
+{
+  "name": "travel-management-system",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "client"
+  ],
+  "scripts": {
+    "build": "next build client",
+    "dev": "next dev client",
+    "start": "next start client"
+  }
+}
