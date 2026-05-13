@@ -34,14 +34,29 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowClient", policy =>
     {
-        policy.WithOrigins("http://localhost:4200", "http://localhost:3000")
+        policy.WithOrigins(
+                "http://localhost:4200", 
+                "http://localhost:3000",
+                "https://travel-management-system-blush-six.vercel.app"
+              )
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
 });
 
+// Use SQL Server locally, but switch to SQLite on Render for easier demo deployment
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    if (builder.Environment.IsProduction() || string.IsNullOrEmpty(connectionString) || connectionString.Contains("localhost"))
+    {
+        options.UseSqlite("Data Source=travelmanagement.db");
+    }
+    else
+    {
+        options.UseSqlServer(connectionString);
+    }
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
