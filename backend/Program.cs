@@ -68,7 +68,16 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.Migrate();
+    
+    // For SQLite on Render, EnsureCreated is safer than Migrate (which uses SQL Server migrations)
+    if (dbContext.Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+    {
+        dbContext.Database.EnsureCreated();
+    }
+    else
+    {
+        dbContext.Database.Migrate();
+    }
 
     if (!dbContext.Users.Any())
     {

@@ -19,6 +19,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
+# Prevent Status 139 crashes on some Linux hosts
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
+
 # Create uploads folder
 RUN mkdir -p /app/wwwroot/uploads
 
