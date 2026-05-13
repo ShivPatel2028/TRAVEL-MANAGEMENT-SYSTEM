@@ -48,12 +48,14 @@ builder.Services.AddCors(options =>
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    if (builder.Environment.IsProduction() || string.IsNullOrEmpty(connectionString) || connectionString.Contains("localhost"))
+    // If we are on Render (Production) or have no connection string, use SQLite
+    if (builder.Environment.IsProduction() || string.IsNullOrEmpty(connectionString))
     {
         options.UseSqlite("Data Source=travelmanagement.db");
     }
     else
     {
+        // Locally, use your SSMS SQL Server
         options.UseSqlServer(connectionString);
     }
 });
