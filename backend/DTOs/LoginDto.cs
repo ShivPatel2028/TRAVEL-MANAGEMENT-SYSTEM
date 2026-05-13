@@ -3,7 +3,8 @@ namespace TravelManagementAPI.DTOs
 {
     public class LoginDto
     {
-        public string Email { get; set; } = string.Empty;
+        public string? EmployeeId { get; set; }
+        public string? Username { get; set; }
         public string Password { get; set; } = string.Empty;
     }
 }

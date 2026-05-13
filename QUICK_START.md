@@ -1,97 +1,50 @@
-// File: QUICK_START.md
-# Quick Start Guide - Travel Management System
+# Quick Start Guide - Travel Management System (2026 Edition)
 
-## 1. Clone/Copy the Project
-
-All files are already created in the project directory.
+## 1. Project Overview
+This project is a modernized Enterprise Travel Management System featuring a multi-departmental approval workflow (Employee -> Manager -> Finance).
 
 ## 2. Start Backend (Terminal 1)
+Ensure you have the .NET SDK installed.
 
 ```bash
 cd backend
-dotnet restore
+dotnet tool restore
 dotnet ef database update
 dotnet run
 ```
-
-✅ Backend will start on: http://localhost:5000
+✅ **Backend API**: http://localhost:5000
+✅ **Swagger UI**: http://localhost:5000/swagger
 
 ## 3. Start Frontend (Terminal 2)
+Ensure you have Node.js installed.
 
 ```bash
-cd frontend
+cd client
 npm install
-npm start
+npm run dev
 ```
+✅ **Frontend Portal**: http://localhost:3000
 
-✅ Frontend will be ready at: http://localhost:4200
+## 4. Test Credentials
+Log in using either **Username** or **Employee ID**.
 
-## 4. Login with Test Credentials
+| Role | Username | Password | Notes |
+|------|----------|----------|-------|
+| **Admin** | `admin` | `password` | Full system control |
+| **Manager** | `rahul` | `password` | Technical approvals |
+| **Finance** | `finance` | `password` | Budget & Expense review |
+| **Employee** | `priya` | `password` | Request submission |
 
-Use any of these accounts:
-
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@example.com | password |
-| Manager | manager@example.com | password |
-| Employee | employee@example.com | password |
-
-## 5. Explore Features
-
-### Admin/Manager Dashboard
-- View all travel requests
-- Approve or reject requests
-- See request details
-
-### Employee Dashboard
-- Create travel requests
-- View their own requests
-- Track approval status
-
-## API Documentation
-
-Visit Swagger UI (when backend is running):
-https://localhost:5001/swagger/index.html
+## 5. Modern Features (2026 Standard)
+- **Finance Integration**: New specialized dashboard for budget verification and reimbursement approval.
+- **Dual Login**: Support for login via Employee ID or Username.
+- **Glassmorphism UI**: High-end Next.js 16 frontend with premium aesthetics.
+- **Post-Trip Reporting**: Employees can now submit detailed reports and upload receipts for reimbursement.
 
 ## Troubleshooting
+- **Database Error**: Run `dotnet ef database update` in the backend folder.
+- **Port Conflict**: If port 3000 or 5000 is in use, stop existing processes and retry.
+- **Missing Bills**: Ensure the `backend/wwwroot/uploads` folder exists for receipt storage.
 
-### Backend won't start?
-- Ensure SQL Server is running
-- Check connection string in `backend/appsettings.json`
-
-### Frontend port in use?
-```bash
-ng serve --port 4201
-```
-
-### Database issues?
-```bash
-cd backend
-dotnet ef database drop
-dotnet ef database update
-```
-
-## File Structure Overview
-
-```
-├── frontend/                 # Angular 18 application
-│   ├── src/app/
-│   │   ├── components/       # UI components
-│   │   ├── services/         # API services
-│   │   └── guards/           # Route guards
-│
-├── backend/                  # ASP.NET Core Web API
-│   ├── Controllers/          # API endpoints
-│   ├── Models/               # Database models
-│   ├── Data/                 # Database context
-│   └── DTOs/                 # Data transfer objects
-```
-
-## Key Technologies
-
-- **Frontend:** Angular 18, Material UI, TypeScript
-- **Backend:** ASP.NET Core 8, Entity Framework Core
-- **Database:** SQL Server
-- **Authentication:** JWT Tokens
-
-That's it! Your full-stack travel management system is ready to use.
+---
+© 2026 TravelCorp. All rights reserved.

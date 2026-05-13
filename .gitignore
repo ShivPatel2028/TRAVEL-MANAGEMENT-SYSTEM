@@ -18,6 +18,9 @@ dist/
 tmp/
 out-tsc/
 .angular/
+.next/
+.env*
+!*.example
 npm-debug.log
 yarn-error.log
 

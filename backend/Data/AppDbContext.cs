@@ -22,11 +22,14 @@ namespace TravelManagementAPI.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.HasIndex(e => e.Email).IsUnique();
+                entity.HasIndex(e => e.EmployeeId).IsUnique();
             });
 
             modelBuilder.Entity<TravelRequest>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.Property(e => e.RequestedBudget).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.ApprovedBudget).HasColumnType("decimal(18,2)");
                 entity.HasOne(e => e.User)
                       .WithMany(u => u.TravelRequests)
                       .HasForeignKey(e => e.UserId)
@@ -36,6 +39,8 @@ namespace TravelManagementAPI.Data
             modelBuilder.Entity<Expense>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.Property(e => e.EstimatedAmount).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.ActualAmount).HasColumnType("decimal(18,2)");
                 entity.HasOne(e => e.TravelRequest)
                       .WithMany(t => t.Expenses)
                       .HasForeignKey(e => e.TravelRequestId)

@@ -10,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
-var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 
 builder.Services.AddAuthentication(options =>
 {
@@ -33,19 +32,16 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngularClient", policy =>
+    options.AddPolicy("AllowClient", policy =>
     {
-        if (allowedOrigins.Length > 0)
-        {
-            policy.WithOrigins(allowedOrigins)
-                  .AllowAnyMethod()
-                  .AllowAnyHeader();
-        }
+        policy.WithOrigins("http://localhost:4200", "http://localhost:3000")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
     });
 });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -53,6 +49,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Database migration and seed data
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -63,31 +60,59 @@ using (var scope = app.Services.CreateScope())
         dbContext.Users.AddRange(
             new TravelManagementAPI.Models.User
             {
+                EmployeeId = "EMP001",
+                Username = "admin",
                 Name = "Admin User",
-                Email = "admin@example.com",
+                Email = "admin@company.com",
+                PhoneNumber = "9876543210",
+                Department = "Administration",
+                Designation = "System Administrator",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"),
-                Role = "Admin"
+                Role = "Admin",
+                IsActive = true,
+                JoiningDate = new DateTime(2023, 1, 15)
             },
             new TravelManagementAPI.Models.User
             {
-                Name = "Manager User",
-                Email = "manager@example.com",
+                EmployeeId = "EMP002",
+                Username = "rahul",
+                Name = "Rahul Sharma",
+                Email = "rahul.sharma@company.com",
+                PhoneNumber = "9876543211",
+                Department = "Engineering",
+                Designation = "Engineering Manager",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"),
-                Role = "Manager"
+                Role = "Manager",
+                IsActive = true,
+                JoiningDate = new DateTime(2023, 3, 10)
             },
             new TravelManagementAPI.Models.User
             {
-                Name = "Employee User",
-                Email = "employee@example.com",
+                EmployeeId = "EMP003",
+                Username = "priya",
+                Name = "Priya Patel",
+                Email = "priya.patel@company.com",
+                PhoneNumber = "9876543212",
+                Department = "Engineering",
+                Designation = "Software Developer",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"),
-                Role = "Employee"
+                Role = "Employee",
+                IsActive = true,
+                JoiningDate = new DateTime(2024, 6, 1)
             },
             new TravelManagementAPI.Models.User
             {
-                Name = "Finance User",
-                Email = "finance@example.com",
+                EmployeeId = "EMP004",
+                Username = "finance",
+                Name = "Finance Dept",
+                Email = "finance@company.com",
+                PhoneNumber = "9876543213",
+                Department = "Finance",
+                Designation = "Finance Manager",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"),
-                Role = "Finance"
+                Role = "Finance",
+                IsActive = true,
+                JoiningDate = new DateTime(2024, 8, 15)
             }
         );
         dbContext.SaveChanges();
@@ -110,7 +135,7 @@ app.UseStaticFiles(new StaticFileOptions
         Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "uploads")),
     RequestPath = "/uploads"
 });
-app.UseCors("AllowAngularClient");
+app.UseCors("AllowClient");
 app.UseMiddleware<JwtMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
