@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "public": true,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "buildCommand": "cd client && npm install && npm run build",
+  "outputDirectory": "client/.next",
+  "framework": "nextjs"
+}
